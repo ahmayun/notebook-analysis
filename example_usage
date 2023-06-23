@@ -1,0 +1,3 @@
+python analysis.py --directory /var/waris_backups/notebooks/ --limit 100 --outdir temp
+python linter.py --directory temp/ --limit 100 --outdir lintout
+pylint --ignored-modules=* --additional-builtins=get_ipython --disable=R,C,W,import-error <filename.py>
