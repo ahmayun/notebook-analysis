@@ -1,3 +1,7 @@
 temp/
 __pycache__/
 .log/
+waris-nb2py*
+py100K*
+reordered-notebooks*
+ipynb-sample-100

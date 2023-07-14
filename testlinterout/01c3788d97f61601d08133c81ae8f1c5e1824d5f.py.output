@@ -1,0 +1,5 @@
+************* Module 01c3788d97f61601d08133c81ae8f1c5e1824d5f
+testlinter/01c3788d97f61601d08133c81ae8f1c5e1824d5f.py:227:11: E1120: No value for argument 'y' in lambda call (no-value-for-parameter)
+
+------------------------------------------------------------------
+Your code has been rated at 9.66/10 (previous run: 9.66/10, +0.00)

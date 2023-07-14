@@ -9,13 +9,15 @@ from datetime import datetime
 import nbformat
 from nbconvert import PythonExporter
 import concurrent.futures
+import signal
+import time
 
 random.seed("ahmad35")
 
 LOG_FOLDER=".log"
 mkdirs(LOG_FOLDER)
 current_time = datetime.now().strftime("analysis_%y%m%d-%H%M%S")
-LOG_FILE = open(f"{LOG_FOLDER}/{current_time}.log", 'w')
+LOG_FILE = open(f"{LOG_FOLDER}/{current_time}.log", 'w', buffering=512)
 
 
 def ipynb_to_py_str(ipynb_file):
@@ -45,14 +47,37 @@ def ipynb_to_py_file(src, destdir):
         f.write(contents)
 
     return str(dest)
-    
+
+class TimeoutError(Exception):
+    pass
+
+
+def timeout_handler(signum, frame):
+    raise TimeoutError("Function timed out")
+
+def run_with_timeout(func, args, timeout, placeholder):
+    # Set the timeout alarm signal
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm(timeout)  # Start the timer
+
+    try:
+        result = func(*args)  # Run the function
+        signal.alarm(0)  # Cancel the timer if function completed within timeout
+        return result
+    except TimeoutError:
+        return placeholder
+
+
+
 def ipynb_to_py(src, limit, pick_random, outdir):
     mkdirs(outdir)
     files = list_full_paths(src)
     worklist = files if not limit else random.sample(files, limit) if pick_random else files[:limit]
-    for f in tqdm.tqdm(worklist):
+    pbar = tqdm.tqdm(worklist) #21623
+    for f in pbar:
+        pbar.set_description(f)
         dest = ipynb_to_py_file(f, outdir)
-        logln(f"{src} --> {dest}", LOG_FILE)
+        logln(f"{f} --> {dest}", LOG_FILE)
         
     # max_threads = 16
     # with concurrent.futures.ThreadPoolExecutor(max_workers=max_threads) as executor:

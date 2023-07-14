@@ -24,6 +24,7 @@ def parse_args(args):
     parser.add_argument('--limit', type=int, help='Limit value')
     parser.add_argument('--random', action='store_true', help='Random flag')
     parser.add_argument('--outdir', type=str, help='output directory')
+    parser.add_argument('--skip', type=int, help='skip first n values', default=0)
     
     parsed_args = parser.parse_args(args)
     return parsed_args
